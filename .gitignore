@@ -1,0 +1,32 @@
+# Laravel
+/laravel/.env
+/laravel/.env.backup
+/laravel/.env.production
+/laravel/.phpunit.result.cache
+/laravel/Homestead.json
+/laravel/Homestead.yaml
+/laravel/auth.json
+/laravel/npm-debug.log
+/laravel/yarn-error.log
+/laravel/vendor/
+/laravel/node_modules/
+/laravel/public/hot
+/laravel/public/storage
+/laravel/storage/*.key
+/laravel/bootstrap/cache/*
+/laravel/database/*.sqlite
+/laravel/database/*.sqlite-journal
+
+# IDE
+/.vscode/
+/.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+
+# OS
+Thumbs.db

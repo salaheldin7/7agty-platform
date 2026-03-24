@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+Allow: /marketplace
+Allow: /property/*
+Allow: /profile/*
+
+Disallow: /api/
+Disallow: /admin/
+Disallow: /seller-panel/
+Disallow: /my-ads/
+
+User-agent: Googlebot
+Allow: /
+Allow: /marketplace
+Allow: /property/*
+Crawl-delay: 1
+
+User-agent: Bingbot
+Allow: /
+Allow: /marketplace
+Allow: /property/*
+Crawl-delay: 1
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+Sitemap: https://7agty.com/sitemap.xml

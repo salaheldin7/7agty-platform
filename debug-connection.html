@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>API Debug - 7agty.com</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                max-width: 900px;
+                margin: 20px auto;
+                padding: 20px;
+                background: #f5f5f5;
+            }
+            .container {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            h1 {
+                color: #2563eb;
+                margin-bottom: 10px;
+            }
+            .test {
+                padding: 20px;
+                margin: 15px 0;
+                border-radius: 8px;
+                border-left: 4px solid #ddd;
+            }
+            .success {
+                background: #d4edda;
+                border-left-color: #28a745;
+            }
+            .error {
+                background: #f8d7da;
+                border-left-color: #dc3545;
+            }
+            .warning {
+                background: #fff3cd;
+                border-left-color: #ffc107;
+            }
+            .info {
+                background: #d1ecf1;
+                border-left-color: #17a2b8;
+            }
+            button {
+                padding: 12px 24px;
+                margin: 8px 5px;
+                cursor: pointer;
+                border: none;
+                border-radius: 6px;
+                background: #2563eb;
+                color: white;
+                font-size: 14px;
+                font-weight: 600;
+                transition: background 0.3s;
+            }
+            button:hover {
+                background: #1d4ed8;
+            }
+            button:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+            }
+            pre {
+                background: #f8f9fa;
+                padding: 15px;
+                overflow-x: auto;
+                border-radius: 6px;
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            .status {
+                font-weight: bold;
+                font-size: 18px;
+            }
+            .divider {
+                height: 1px;
+                background: #dee2e6;
+                margin: 30px 0;
+            }
+            .emoji {
+                font-size: 24px;
+                margin-right: 10px;
+            }
+            .loading {
+                display: inline-block;
+                animation: spin 1s linear infinite;
+            }
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>
+                <span class="emoji">🔍</span>7agty.com Connection Diagnostic
+            </h1>
+            <p>
+                This tool will help identify why you're getting "Connection
+                Error"
+            </p>
+
+            <div class="divider"></div>
+
+            <div class="test info">
+                <h3>Current Configuration</h3>
+                <p>
+                    <strong>Frontend URL:</strong>
+                    <span id="frontendUrl"></span>
+                </p>
+                <p>
+                    <strong>Expected Backend:</strong> https://7agty.com/api
+                </p>
+                <p><strong>Test Time:</strong> <span id="testTime"></span></p>
+            </div>
+
+            <div class="test">
+                <h3>Test 1: Check API Endpoint Accessibility</h3>
+                <button onclick="testAPIEndpoint()">Run Test 1</button>
+                <div id="test1Result"></div>
+            </div>
+
+            <div class="test">
+                <h3>Test 2: Check Login Endpoint</h3>
+                <button onclick="testLoginEndpoint()">Run Test 2</button>
+                <div id="test2Result"></div>
+            </div>
+
+            <div class="test">
+                <h3>Test 3: Check CORS Configuration</h3>
+                <button onclick="testCORS()">Run Test 3</button>
+                <div id="test3Result"></div>
+            </div>
+
+            <div class="test">
+                <h3>Test 4: Check Session/Sanctum</h3>
+                <button onclick="testSanctum()">Run Test 4</button>
+                <div id="test4Result"></div>
+            </div>
+
+            <div class="test">
+                <h3>Test 5: Simulate Login Request</h3>
+                <button onclick="testActualLogin()">Run Test 5</button>
+                <div id="test5Result"></div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="test warning">
+                <h3>⚠️ Common Issues Checklist</h3>
+                <ul>
+                    <li>
+                        Backend .env file has correct APP_URL and FRONTEND_URL
+                    </li>
+                    <li>Root .htaccess routes /api/* to Laravel</li>
+                    <li>Laravel config cache is cleared</li>
+                    <li>CORS allows your domain</li>
+                    <li>Frontend is built with correct VITE_API_URL</li>
+                </ul>
+            </div>
+        </div>
+
+        <script>
+            // Display current info
+            document.getElementById("frontendUrl").textContent =
+                window.location.origin;
+            document.getElementById("testTime").textContent =
+                new Date().toLocaleString();
+
+            const API_URL = "https://7agty.com/api";
+
+            async function testAPIEndpoint() {
+                const resultDiv = document.getElementById("test1Result");
+                resultDiv.innerHTML = '<p class="loading">⏳ Testing...</p>';
+
+                try {
+                    const response = await fetch(`${API_URL}/properties`, {
+                        method: "GET",
+                        headers: {
+                            Accept: "application/json",
+                        },
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        resultDiv.innerHTML = `
+                        <div class="success">
+                            <p class="status">✅ SUCCESS!</p>
+                            <p><strong>Status:</strong> ${response.status} ${
+                            response.statusText
+                        }</p>
+                            <p><strong>Properties found:</strong> ${
+                                data.properties ? data.properties.length : 0
+                            }</p>
+                            <p>✅ Backend API is accessible and working!</p>
+                        </div>
+                    `;
+                    } else {
+                        const text = await response.text();
+                        resultDiv.innerHTML = `
+                        <div class="error">
+                            <p class="status">❌ API Error</p>
+                            <p><strong>Status:</strong> ${response.status}</p>
+                            <p><strong>Response:</strong></p>
+                            <pre>${text.substring(0, 500)}</pre>
+                            <p><strong>Issue:</strong> Backend returned error</p>
+                        </div>
+                    `;
+                    }
+                } catch (error) {
+                    resultDiv.innerHTML = `
+                    <div class="error">
+                        <p class="status">❌ CONNECTION FAILED</p>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>This means:</strong></p>
+                        <ul>
+                            <li>❌ Cannot reach https://7agty.com/api/properties</li>
+                            <li>⚠️ Check if .htaccess routes /api/* to Laravel</li>
+                            <li>⚠️ Check if Laravel backend is running</li>
+                        </ul>
+                    </div>
+                `;
+                }
+            }
+
+            async function testLoginEndpoint() {
+                const resultDiv = document.getElementById("test2Result");
+                resultDiv.innerHTML = '<p class="loading">⏳ Testing...</p>';
+
+                try {
+                    const response = await fetch(`${API_URL}/login`, {
+                        method: "POST",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            username: "test",
+                            password: "test",
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (response.status === 422 || response.status === 401) {
+                        resultDiv.innerHTML = `
+                        <div class="success">
+                            <p class="status">✅ Login endpoint is working!</p>
+                            <p><strong>Status:</strong> ${response.status}</p>
+                            <p><strong>Message:</strong> ${
+                                data.message || "Validation error (expected)"
+                            }</p>
+                            <p>✅ This is correct! Endpoint rejects invalid credentials.</p>
+                        </div>
+                    `;
+                    } else {
+                        resultDiv.innerHTML = `
+                        <div class="warning">
+                            <p class="status">⚠️ Unexpected Response</p>
+                            <p><strong>Status:</strong> ${response.status}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                    }
+                } catch (error) {
+                    resultDiv.innerHTML = `
+                    <div class="error">
+                        <p class="status">❌ LOGIN ENDPOINT NOT ACCESSIBLE</p>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>Issue:</strong> Cannot reach /api/login</p>
+                        <p>⚠️ This is why you get "Connection Error" when signing in!</p>
+                    </div>
+                `;
+                }
+            }
+
+            async function testCORS() {
+                const resultDiv = document.getElementById("test3Result");
+                resultDiv.innerHTML = '<p class="loading">⏳ Testing...</p>';
+
+                try {
+                    const response = await fetch(`${API_URL}/properties`, {
+                        method: "GET",
+                        headers: {
+                            Accept: "application/json",
+                        },
+                    });
+
+                    const corsHeaders = {
+                        "Access-Control-Allow-Origin": response.headers.get(
+                            "Access-Control-Allow-Origin"
+                        ),
+                        "Access-Control-Allow-Credentials":
+                            response.headers.get(
+                                "Access-Control-Allow-Credentials"
+                            ),
+                        "Access-Control-Allow-Methods": response.headers.get(
+                            "Access-Control-Allow-Methods"
+                        ),
+                        "Access-Control-Allow-Headers": response.headers.get(
+                            "Access-Control-Allow-Headers"
+                        ),
+                    };
+
+                    const hasValidCORS =
+                        corsHeaders["Access-Control-Allow-Origin"] !== null;
+
+                    resultDiv.innerHTML = `
+                    <div class="${hasValidCORS ? "success" : "warning"}">
+                        <p class="status">${
+                            hasValidCORS ? "✅" : "⚠️"
+                        } CORS Headers ${
+                        hasValidCORS ? "Present" : "Missing"
+                    }</p>
+                        <pre>${JSON.stringify(corsHeaders, null, 2)}</pre>
+                        ${
+                            !hasValidCORS
+                                ? "<p><strong>⚠️ CORS headers missing! Check config/cors.php</strong></p>"
+                                : ""
+                        }
+                    </div>
+                `;
+                } catch (error) {
+                    resultDiv.innerHTML = `
+                    <div class="error">
+                        <p class="status">❌ Cannot test CORS</p>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+                }
+            }
+
+            async function testSanctum() {
+                const resultDiv = document.getElementById("test4Result");
+                resultDiv.innerHTML = '<p class="loading">⏳ Testing...</p>';
+
+                try {
+                    // Try to get CSRF cookie
+                    const csrfResponse = await fetch(
+                        "https://7agty.com/sanctum/csrf-cookie",
+                        {
+                            method: "GET",
+                            credentials: "include",
+                        }
+                    );
+
+                    if (csrfResponse.ok || csrfResponse.status === 204) {
+                        resultDiv.innerHTML = `
+                        <div class="success">
+                            <p class="status">✅ Sanctum CSRF Cookie</p>
+                            <p><strong>Status:</strong> ${csrfResponse.status}</p>
+                            <p>✅ Sanctum endpoint is accessible</p>
+                        </div>
+                    `;
+                    } else {
+                        resultDiv.innerHTML = `
+                        <div class="warning">
+                            <p class="status">⚠️ Sanctum Response</p>
+                            <p><strong>Status:</strong> ${csrfResponse.status}</p>
+                        </div>
+                    `;
+                    }
+                } catch (error) {
+                    resultDiv.innerHTML = `
+                    <div class="error">
+                        <p class="status">❌ Sanctum Not Accessible</p>
+                        <p>${error.message}</p>
+                        <p>⚠️ This might cause authentication issues</p>
+                    </div>
+                `;
+                }
+            }
+
+            async function testActualLogin() {
+                const resultDiv = document.getElementById("test5Result");
+                resultDiv.innerHTML =
+                    '<p class="loading">⏳ Testing actual login flow...</p>';
+
+                try {
+                    // Step 1: Get CSRF cookie
+                    await fetch("https://7agty.com/sanctum/csrf-cookie", {
+                        credentials: "include",
+                    });
+
+                    // Step 2: Try login
+                    const loginResponse = await fetch(`${API_URL}/login`, {
+                        method: "POST",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                        },
+                        credentials: "include",
+                        body: JSON.stringify({
+                            username: "salah2",
+                            password: "yourpassword",
+                        }),
+                    });
+
+                    const data = await loginResponse.json();
+
+                    resultDiv.innerHTML = `
+                    <div class="${
+                        loginResponse.status === 401 ||
+                        loginResponse.status === 422
+                            ? "success"
+                            : "warning"
+                    }">
+                        <p class="status">${
+                            loginResponse.status === 401 ||
+                            loginResponse.status === 422
+                                ? "✅"
+                                : "⚠️"
+                        } Login Flow Test</p>
+                        <p><strong>Status:</strong> ${loginResponse.status}</p>
+                        <p><strong>Response:</strong></p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                        ${
+                            loginResponse.status === 401 ||
+                            loginResponse.status === 422
+                                ? "<p>✅ Login endpoint works! (Wrong password is expected)</p>"
+                                : "<p>⚠️ Unexpected status code</p>"
+                        }
+                    </div>
+                `;
+                } catch (error) {
+                    resultDiv.innerHTML = `
+                    <div class="error">
+                        <p class="status">❌ LOGIN FLOW FAILED</p>
+                        <p><strong>Error:</strong> ${error.message}</p>
+                        <p><strong>This is the problem!</strong> The frontend gets this same error.</p>
+                        <h4>Possible causes:</h4>
+                        <ul>
+                            <li>❌ .htaccess not routing /api/* to Laravel</li>
+                            <li>❌ Laravel backend not accessible</li>
+                            <li>❌ Network/firewall blocking requests</li>
+                        </ul>
+                        <h4>Fix:</h4>
+                        <ol>
+                            <li>Check root .htaccess file routes /api/* correctly</li>
+                            <li>Verify https://7agty.com/api/properties works in browser</li>
+                            <li>Run: php artisan config:clear on server</li>
+                        </ol>
+                    </div>
+                `;
+                }
+            }
+
+            // Auto-run tests on load
+            window.onload = function () {
+                setTimeout(() => testAPIEndpoint(), 500);
+                setTimeout(() => testLoginEndpoint(), 1500);
+                setTimeout(() => testCORS(), 2500);
+            };
+        </script>
+
+        <div class="container" style="margin-top: 30px">
+            <h2>📋 Next Steps Based on Results:</h2>
+
+            <div class="test info">
+                <h4>If Test 1 Fails (API not accessible):</h4>
+                <p>Problem: .htaccess not routing correctly</p>
+                <p>
+                    <strong>Fix:</strong> Update /public_html/.htaccess with
+                    proper routing
+                </p>
+            </div>
+
+            <div class="test info">
+                <h4>If Test 2 Fails (Login endpoint not accessible):</h4>
+                <p>Problem: Backend API routes not working</p>
+                <p>
+                    <strong>Fix:</strong> Run
+                    <code
+                        >php artisan route:clear && php artisan
+                        config:clear</code
+                    >
+                </p>
+            </div>
+
+            <div class="test info">
+                <h4>If Tests Pass but Login Still Fails:</h4>
+                <p>Problem: Frontend using wrong API URL</p>
+                <p>
+                    <strong>Fix:</strong> Rebuild frontend with correct
+                    VITE_API_URL
+                </p>
+            </div>
+        </div>
+    </body>
+</html>
