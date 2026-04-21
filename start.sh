@@ -7,17 +7,17 @@ fi
 
 php artisan config:clear || true
 php artisan route:clear || true
-php artisan storage:link || true
+
+# Force remove and recreate symlink every boot
+rm -rf /var/www/html/public/storage
+php artisan storage:link
 
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
   php artisan migrate --force
 fi
 
-# Start php-fpm in background
 php-fpm -D
 
-# Replace PORT in nginx config (Render uses dynamic port)
 sed -i "s/listen 10000/listen ${PORT:-10000}/" /etc/nginx/sites-available/default
-php artisan storage:link || echo "Storage link already exists"
-# Start nginx in foreground (keeps container alive)
+
 exec nginx -g "daemon off;"
