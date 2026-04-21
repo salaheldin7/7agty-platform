@@ -1,0 +1,56 @@
+services:
+  - type: web
+    name: 7agty-api
+    runtime: php
+    plan: free
+    buildCommand: |
+      composer install --no-dev --optimize-autoloader
+      php artisan config:clear
+      php artisan route:clear
+      php artisan view:clear
+    startCommand: |
+      php artisan migrate --force
+      php artisan db:seed --force
+      php artisan storage:link || true
+      php artisan serve --host=0.0.0.0 --port=$PORT
+    healthCheckPath: /api/properties
+    autoDeploy: true
+    envVars:
+      - key: APP_NAME
+        value: 7agty
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_URL
+        sync: false
+      - key: APP_KEY
+        sync: false
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        value: ep-delicate-frog-abfsr7wr-pooler.eu-west-2.aws.neon.tech
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_DATABASE
+        value: neondb
+      - key: DB_USERNAME
+        value: neondb_owner
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_SSLMODE
+        value: require
+      - key: CACHE_STORE
+        value: database
+      - key: SESSION_DRIVER
+        value: database
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: FILESYSTEM_DISK
+        value: local
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://7agty.vercel.app
+      - key: FRONTEND_URL
+        value: https://7agty.vercel.app
+      - key: SANCTUM_STATEFUL_DOMAINS
+        value: 7agty.vercel.app

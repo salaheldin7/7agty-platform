@@ -1,0 +1,38 @@
+# Enable CORS with credentials support
+<IfModule mod_headers.c>
+    Header always set Access-Control-Allow-Origin "https://3qaraty.icu"
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "X-Requested-With, Content-Type, Accept, Origin, Authorization, X-CSRF-TOKEN, X-XSRF-TOKEN"
+    Header always set Access-Control-Allow-Credentials "true"
+    Header always set Access-Control-Expose-Headers "Authorization"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Handle X-XSRF-Token Header
+    RewriteCond %{HTTP:x-xsrf-token} .
+    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+    
+    # Handle OPTIONS preflight - return 200 immediately
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule .* - [R=200,L]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller (index-laravel.php)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index-laravel.php [L]
+</IfModule>

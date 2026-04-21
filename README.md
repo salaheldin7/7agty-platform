@@ -1,145 +1,61 @@
-# 7agty (حاجتي) - Property Listing Platform
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-A complete property listing and real estate platform built with Laravel 12 and vanilla JavaScript.
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-## Screenshots
+## About Laravel
 
-### Homepage & Listings
-![Homepage 1](screenshots/7agty%201.1.png)
-![Homepage 2](screenshots/7agty%201.2.png)
-![Listings View](screenshots/7agty%201.3.png)
-![Property Details](screenshots/7agty%201.4.png)
-![Search & Filters](screenshots/7agty%201.5.png)
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-### Additional Features
-![Feature 1](screenshots/7agty%202.png)
-![Feature 2](screenshots/7agty%203.png)
-![Feature 3](screenshots/7agty%204.png)
-![Feature 4](screenshots/7agty%205.png)
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-## Features
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-- 🏠 Property Listings with multiple categories
-- 💬 Real-time Chat System
-- ⭐ Favorites/Bookmarks
-- 🔔 Notifications
-- 👤 User Authentication & Profiles
-- 📧 Email Verification
-- 🌍 Multi-location Support (Countries, Governorates, Cities)
-- 📱 Responsive Design
+## Learning Laravel
 
-## Tech Stack
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-### Backend
-- Laravel 12
-- PHP 8.2+
-- MySQL Database
-- Laravel Sanctum (API Authentication)
-- Laravel Socialite
+You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-### Frontend
-- HTML5/CSS3/JavaScript
-- Responsive Design
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Installation
+## Laravel Sponsors
 
-### Prerequisites
-- PHP 8.2 or higher
-- Composer
-- MySQL Database
-- Node.js & NPM (optional, for asset compilation)
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-### Setup Steps
+### Premium Partners
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/7agty.git
-   cd 7agty
-   ```
+- **[Vehikl](https://vehikl.com)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+- **[Redberry](https://redberry.international/laravel-development)**
+- **[Active Logic](https://activelogic.com)**
 
-2. **Install Laravel dependencies**
-   ```bash
-   cd laravel
-   composer install
-   ```
+## Contributing
 
-3. **Configure environment**
-   ```bash
-   cp .env.example .env
-   ```
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-   Edit `.env` and set your:
-   - Database credentials
-   - Mail server settings
-   - App URL
-   - Sanctum domains
+## Code of Conduct
 
-4. **Generate application key**
-   ```bash
-   php artisan key:generate
-   ```
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-5. **Run migrations**
-   ```bash
-   php artisan migrate
-   ```
+## Security Vulnerabilities
 
-6. **Create storage link**
-   ```bash
-   php artisan storage:link
-   ```
-
-7. **Start the development server**
-   ```bash
-   php artisan serve
-   ```
-
-## Database
-
-The project uses MySQL in production. For local development, you can also use SQLite.
-
-**Database Schema includes:**
-- Users (with roles: admin, seller, user)
-- Properties (with soft deletes and approval system)
-- Chats & Messages
-- Favorites
-- Notifications
-- Countries, Governorates, Cities
-- Contact Requests
-
-## API Endpoints
-
-The Laravel backend provides RESTful API endpoints for:
-- User authentication & registration
-- Property CRUD operations
-- Chat functionality
-- Favorites management
-- Notifications
-- Location data
-
-See API documentation in `/laravel/routes/api.php`
-
-## Security Notes
-
-- Never commit `.env` file to version control
-- Keep your database credentials secure
-- Use HTTPS in production
-- Configure CORS properly for your frontend domain
-
-## Production Deployment
-
-1. Set `APP_ENV=production` in `.env`
-2. Set `APP_DEBUG=false`
-3. Configure your web server (Apache/Nginx)
-4. Set proper file permissions
-5. Enable HTTPS
-6. Configure session & cache drivers appropriately
-7. Set up queue workers for background jobs
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
 ## License
 
-MIT License
-
-## Support
-
-For issues and questions, please open an issue on GitHub.
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

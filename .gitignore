@@ -1,32 +1,50 @@
-# Laravel
-/laravel/.env
-/laravel/.env.backup
-/laravel/.env.production
-/laravel/.phpunit.result.cache
-/laravel/Homestead.json
-/laravel/Homestead.yaml
-/laravel/auth.json
-/laravel/npm-debug.log
-/laravel/yarn-error.log
-/laravel/vendor/
-/laravel/node_modules/
-/laravel/public/hot
-/laravel/public/storage
-/laravel/storage/*.key
-/laravel/bootstrap/cache/*
-/laravel/database/*.sqlite
-/laravel/database/*.sqlite-journal
-
-# IDE
-/.vscode/
-/.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
 # Logs
+logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# OS
-Thumbs.db
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.vercel
+
+# Laravel / PHP
+vendor/
+bootstrap/cache/*.php
+bootstrap/cache/*.json
+storage/*.key
+storage/logs/*
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+public/storage
+public/hot
+.phpunit.cache
+.phpunit.result.cache
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+!.env.render.example
+!.env.vercel.example
+
+# Misc build artifacts
+coverage/

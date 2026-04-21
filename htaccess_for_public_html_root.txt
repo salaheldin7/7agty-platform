@@ -1,0 +1,34 @@
+# Enable CORS with credentials support - MUST be first!
+<IfModule mod_headers.c>
+    # Set CORS headers for ALL responses (including errors)
+    SetEnvIf Origin "^https?://(www\.)?3qaraty\.icu$" AccessControlAllowOrigin=$0
+    Header always set Access-Control-Allow-Origin "%{AccessControlAllowOrigin}e" env=AccessControlAllowOrigin
+    Header always set Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    Header always set Access-Control-Allow-Headers "X-Requested-With, Content-Type, Accept, Origin, Authorization, X-CSRF-TOKEN, X-XSRF-TOKEN"
+    Header always set Access-Control-Allow-Credentials "true"
+    Header always set Access-Control-Expose-Headers "Authorization"
+    Header always set Access-Control-Max-Age "3600"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Handle OPTIONS preflight requests FIRST - return 200 immediately
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule .* - [R=200,L]
+    
+    # Route all /api/* requests to Laravel backend
+    RewriteRule ^api/(.*)$ index-laravel.php [L,QSA]
+    
+    # Route all /sanctum/* requests to Laravel backend
+    RewriteRule ^sanctum/(.*)$ index-laravel.php [L,QSA]
+    
+    # Route all /storage/* requests to Laravel's public/storage folder
+    RewriteRule ^storage/(.*)$ laravel/public/storage/$1 [L]
+    
+    # React Router - serve index.html for all other routes (except laravel directory and files)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !^/laravel/
+    RewriteRule ^ index.html [L]
+</IfModule>
