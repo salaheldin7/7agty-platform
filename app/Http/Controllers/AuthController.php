@@ -65,8 +65,8 @@ class AuthController extends Controller
                 'code' => $code
             ], function ($message) use ($request) {
                 $message->to($request->email)
-                    ->subject('Verify Your Email - 3qaraty');
-                $message->from('admin@3qaraty.icu', '3qaraty');
+                    ->subject('Verify Your Email - 7agty');
+               
             });
 
             return response()->json([
@@ -226,8 +226,8 @@ try {
     
     Mail::send('emails.welcome', $userData, function ($message) use ($user) {
         $message->to($user->email)
-            ->subject('Welcome to 3qaraty - Your Journey Starts Now! 🎉')
-            ->from('admin@3qaraty.icu', '3qaraty');
+            ->subject('Welcome to 7agty - Your Journey Starts Now! 🎉')
+           
     });
     
     \Log::info('Welcome email sent successfully', [
@@ -421,8 +421,8 @@ public function forgotPassword(Request $request)
                 'expiresAt' => $resetToken->expires_at->format('F j, Y g:i A')
             ], function ($message) use ($user) {
                 $message->to($user->email)
-                    ->subject('Password Reset Request - 3qaraty')
-                    ->from('admin@3qaraty.icu', '3qaraty');
+                    ->subject('Password Reset Request - 7agty')
+                    
             });
 
             \Log::info('Password reset email sent', [
