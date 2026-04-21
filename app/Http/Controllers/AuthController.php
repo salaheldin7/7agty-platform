@@ -37,51 +37,70 @@ class AuthController extends Controller
      * Send verification code to email
      */
     public function sendVerificationCode(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email|max:255',
-            'name' => 'required|string|max:255',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|string|email|max:255',
+        'name' => 'required|string|max:255',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $validator->errors()
-            ], 422);
-        }
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validation failed',
+            'errors' => $validator->errors()
+        ], 422);
+    }
 
+    try {
+        // Generate 6-digit verification code
+        $code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+
+        // Store code in cache
+        $cacheKey = 'verification_code_' . $request->email;
+        Cache::put($cacheKey, $code, now()->addMinutes(10));
+
+        // 🔥 TRY sending email safely
         try {
-            // Generate 6-digit verification code
-            $code = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
-            
-            // Store code in cache for 10 minutes
-            $cacheKey = 'verification_code_' . $request->email;
-            Cache::put($cacheKey, $code, now()->addMinutes(10));
-
-            // Send email
             Mail::send('emails.verification-code', [
                 'name' => $request->name,
                 'code' => $code
             ], function ($message) use ($request) {
                 $message->to($request->email)
-                    ->subject('Verify Your Email - 7agty');
-               
+                        ->subject('Verify Your Email - 7agty');
             });
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Verification code sent successfully'
+        } catch (\Exception $mailException) {
+            // 🚨 Log the real problem (IMPORTANT)
+            \Log::error('Verification email failed', [
+                'email' => $request->email,
+                'error' => $mailException->getMessage()
             ]);
 
-        } catch (\Exception $e) {
+            // 👉 TEMP fallback (VERY IMPORTANT FOR DEBUG)
             return response()->json([
-                'success' => false,
-                'message' => 'Failed to send verification code',
-                'error' => $e->getMessage()
-            ], 500);
+                'success' => true,
+                'message' => 'Email service failed, but code generated',
+                'debug_code' => $code // 🔥 REMOVE THIS IN PRODUCTION
+            ]);
         }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Verification code sent successfully'
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('Send verification error', [
+            'error' => $e->getMessage()
+        ]);
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to send verification code',
+            'error' => $e->getMessage()
+        ], 500);
     }
+}
 
     /**
      * Verify the email code (separate endpoint)
@@ -217,31 +236,30 @@ class AuthController extends Controller
 
             // Send welcome email
             // Send welcome email
+// ✅ Send welcome email (CLEAN & SAFE)
 try {
-    $userData = [
+    Mail::send('emails.welcome', [
         'name' => $user->name,
         'username' => $user->username,
         'email' => $user->email
-    ];
-    
-    Mail::send('emails.welcome', $userData, function ($message) use ($user) {
-        $message->to($user->email)
-            ->subject('Welcome to 7agty - Your Journey Starts Now! 🎉');
-           
+    ], function ($message) use ($user) {
+      $message->to($user->email)
+        ->subject('Welcome to 7agty 🎉');
     });
-    
-    \Log::info('Welcome email sent successfully', [
+
+    \Log::info('Welcome email sent', [
         'user_id' => $user->id,
-        'email' => $user->email,
-        'username' => $user->username
+        'email' => $user->email
     ]);
+
 } catch (\Exception $mailException) {
-    \Log::error('Welcome email failed to send', [
+    \Log::error('Welcome email failed', [
         'user_id' => $user->id,
         'email' => $user->email,
-        'error' => $mailException->getMessage(),
-        'trace' => $mailException->getTraceAsString()
+        'error' => $mailException->getMessage()
     ]);
+
+    // ❗ DO NOT break registration
 }
 
             $token = $user->createToken('auth_token')->plainTextToken;
