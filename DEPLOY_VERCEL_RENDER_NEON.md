@@ -82,21 +82,10 @@ If your GitHub repo contains `render.yaml`, in Render choose **New +** -> **Blue
 Render will create `7agty-api` service and prompt only for secret values (`sync: false` vars).
 
 ### Render settings
-- Runtime: `PHP`
-- Build Command:
-
-```bash
-composer install --no-dev --optimize-autoloader
-php artisan config:clear
-php artisan route:clear
-php artisan view:clear
-```
-
-- Start Command:
-
-```bash
-php artisan migrate --force ; php artisan db:seed --force ; php artisan storage:link ; php artisan serve --host=0.0.0.0 --port=$PORT
-```
+- Runtime: `Docker`
+- `render.yaml` now uses `runtime: docker` and builds from `./Dockerfile`.
+- Container startup is handled by `start.sh` (migrations run automatically).
+- Optional first-deploy seed: set `RUN_DB_SEED=true` in Render environment variables.
 
 ### Backend environment variables (Render)
 Set these in Render:
@@ -134,9 +123,9 @@ Neon is PostgreSQL, so direct import will fail.
 ### Fastest working path for demo
 Use Laravel migrations + seeders on Neon:
 - `php artisan migrate --force`
-- `php artisan db:seed --force`
+- `php artisan db:seed --force` (or set `RUN_DB_SEED=true` on Render for one deploy)
 
-This is already included in the Render start command above.
+Migrations are included in `start.sh` for Docker runtime.
 
 ### If you must keep old MySQL data from `7agty.sql`
 You need conversion before Neon import. Options:

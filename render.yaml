@@ -1,20 +1,12 @@
 services:
   - type: web
     name: 7agty-api
-    runtime: php
+    runtime: docker
     plan: free
-    buildCommand: |
-      composer install --no-dev --optimize-autoloader
-      php artisan config:clear
-      php artisan route:clear
-      php artisan view:clear
-    startCommand: |
-      php artisan migrate --force
-      php artisan db:seed --force
-      php artisan storage:link || true
-      php artisan serve --host=0.0.0.0 --port=$PORT
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     healthCheckPath: /api/properties
-    autoDeploy: true
+    autoDeployTrigger: commit
     envVars:
       - key: APP_NAME
         value: 7agty
