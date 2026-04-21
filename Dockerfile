@@ -3,8 +3,8 @@ FROM php:8.3-cli-bookworm
 WORKDIR /var/www/html
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git unzip libpq-dev libzip-dev libicu-dev \
-    && docker-php-ext-install pdo_pgsql mbstring bcmath zip intl \
+    && apt-get install -y --no-install-recommends git unzip libpq-dev libzip-dev libicu-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo_pgsql mbstring bcmath zip intl dom xml \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
