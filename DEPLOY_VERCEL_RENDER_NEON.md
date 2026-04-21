@@ -104,6 +104,8 @@ DB_DATABASE=neondb
 DB_USERNAME=neondb_owner
 DB_PASSWORD=YOUR_NEON_PASSWORD
 DB_SSLMODE=require
+RUN_MIGRATIONS=false
+RUN_DB_SEED=false
 
 CACHE_STORE=database
 SESSION_DRIVER=database
@@ -125,7 +127,8 @@ Use Laravel migrations + seeders on Neon:
 - `php artisan migrate --force`
 - `php artisan db:seed --force` (or set `RUN_DB_SEED=true` on Render for one deploy)
 
-Migrations are included in `start.sh` for Docker runtime.
+For Docker runtime, startup migrations are now opt-in with `RUN_MIGRATIONS=true`.
+This prevents crashes when the database is already pre-populated from a converted SQL dump.
 
 ### If you must keep old MySQL data from `7agty.sql`
 You need conversion before Neon import. Options:
