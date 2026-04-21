@@ -7,18 +7,17 @@ fi
 
 php artisan config:clear || true
 php artisan route:clear || true
-php artisan view:clear || true
 php artisan storage:link || true
 
 if [ "${RUN_MIGRATIONS:-false}" = "true" ]; then
   php artisan migrate --force
-else
-  echo "Skipping migrations (set RUN_MIGRATIONS=true to enable)."
 fi
 
-if [ "${RUN_DB_SEED:-false}" = "true" ]; then
-  php artisan db:seed --force
-fi
+# Start php-fpm in background
+php-fpm -D
 
-: "${PORT:=10000}"
-exec php artisan serve --host=0.0.0.0 --port="${PORT}"
+# Replace PORT in nginx config (Render uses dynamic port)
+sed -i "s/listen 10000/listen ${PORT:-10000}/" /etc/nginx/sites-available/default
+
+# Start nginx in foreground (keeps container alive)
+exec nginx -g "daemon off;"
