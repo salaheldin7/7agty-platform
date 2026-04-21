@@ -226,7 +226,7 @@ try {
     
     Mail::send('emails.welcome', $userData, function ($message) use ($user) {
         $message->to($user->email)
-            ->subject('Welcome to 7agty - Your Journey Starts Now! 🎉')
+            ->subject('Welcome to 7agty - Your Journey Starts Now! 🎉');
            
     });
     
@@ -421,7 +421,7 @@ public function forgotPassword(Request $request)
                 'expiresAt' => $resetToken->expires_at->format('F j, Y g:i A')
             ], function ($message) use ($user) {
                 $message->to($user->email)
-                    ->subject('Password Reset Request - 7agty')
+                    ->subject('Password Reset Request - 7agty');
                     
             });
 
