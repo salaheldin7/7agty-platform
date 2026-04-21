@@ -18,6 +18,6 @@ php-fpm -D
 
 # Replace PORT in nginx config (Render uses dynamic port)
 sed -i "s/listen 10000/listen ${PORT:-10000}/" /etc/nginx/sites-available/default
-
+php artisan storage:link || echo "Storage link already exists"
 # Start nginx in foreground (keeps container alive)
 exec nginx -g "daemon off;"
